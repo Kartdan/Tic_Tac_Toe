@@ -48,6 +48,7 @@ class _HomePageState extends State<HomePage> {
   String? text;
   String? errorText;
   String result = '';
+  int x;
 
   @override
   Widget build(BuildContext context) {

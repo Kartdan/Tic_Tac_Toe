@@ -24,105 +24,164 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  void createAlertDialog(BuildContext context) {
-    showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(title: Text('$number'), actions: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                conclusion,
-                style: const TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ]);
-        });
+  int tic_tac(List<int> list, int nr)
+  {
+    if(list[0] == nr && list[1] == nr && list[2] == nr)
+      {
+        return 1;
+      }
+    if(list[3] == nr && list[4] == nr && list[5] == nr)
+    {
+      return 1;
+    }
+    if(list[6] == nr && list[7] == nr && list[8] == nr)
+    {
+      return 1;
+    }
+    if(list[0] == nr && list[3] == nr && list[6] == nr)
+    {
+      return 1;
+    }
+    if(list[1] == nr && list[4] == nr && list[7] == nr)
+    {
+      return 1;
+    }
+    if(list[2] == nr && list[5] == nr && list[8] == nr)
+    {
+      return 1;
+    }
+    if(list[0] == nr && list[4] == nr && list[8] == nr)
+    {
+      return 1;
+    }
+    if(list[2] == nr && list[4] == nr && list[6] == nr)
+    {
+      return 1;
+    }
+    return 0;
   }
 
-  final TextEditingController controller = TextEditingController();
-  String conclusion = '';
-  int? number;
-  String? text;
-  String? errorText;
-  String result = '';
+  int no_winner(List<int> list)
+  {
+    for(int i = 0; i < list.length; i++)
+      {
+        if(list[i] == 0)
+          {
+            return 0;
+          }
+      }
+    return 1;
+  }
+
+  List<int> _list = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  List<Color> color_list = [
+    Colors.blue,
+    Colors.blue,
+    Colors.blue,
+    Colors.blue,
+    Colors.blue,
+    Colors.blue,
+    Colors.blue,
+    Colors.blue,
+    Colors.blue,
+  ];
+  int turn = 1;
+  int game_over = 0;
+  String button = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.yellow,
         title: const Center(
-          child: Text('Number Shapes'),
+          child: Text('tic-tac-toe'),
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsetsDirectional.all(16.0),
-            child: const Text(
-              'Please input a number to see if it is square or triangular.',
-              style: TextStyle(
-                fontSize: 18,
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+        ),
+        itemCount: _list.length,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              constraints: const BoxConstraints.expand(),
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  color: color_list[index],
               ),
             ),
-          ),
-          Container(
-            margin: const EdgeInsetsDirectional.all(16.0),
-            child: TextField(
-              controller: controller,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              onChanged: (String? value) {},
-              decoration: InputDecoration(
-                errorText: errorText,
-                hintText: 'Try me',
-              ),
-            ),
-          ),
-        ],
+            onTap: () {
+              setState(() {
+                {
+                  if (turn == 1) {
+                    color_list[index] = Colors.green;
+                    _list[index] = 1;
+                    if(tic_tac(_list, turn) == 1)
+                      {
+                        button = "Play again";
+                        game_over = 1;
+                    } else {
+                      turn = 2;
+                    }
+                  } else {
+                    _list[index] = 2;
+                    color_list[index] = Colors.red;
+                    if (tic_tac(_list, turn) == 1) {
+                      button = "Play again";
+                      game_over = 1;
+                    } else {
+                      turn = 1;
+                    }
+                  }
+                  if (no_winner(_list) == 1) {
+                    if (game_over == 1) {
+                      for (int i = 0; i < color_list.length; i++) {
+                        color_list[i] = Colors.blue;
+                      }
+                      for (int i = 0; i < _list.length; i++) {
+                        _list[i] = 0;
+                      }
+                      button = 'Play again';
+                    } else {
+                      for (int i = 0; i < color_list.length; i++) {
+                        color_list[i] = Colors.blue;
+                      }
+                      for (int i = 0; i < _list.length; i++) {
+                        _list[i] = 0;
+                      }
+                    }
+                  }
+                }
+              });
+            },
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFFE57373),
-        elevation: 0.0,
-        onPressed: () {
-          int squareFlag = 0;
-          int triangularFlag = 0;
-          final String value = controller.text;
-          final int? intValue = int.tryParse(value);
+        child: Text(
+          button,
+          textAlign: TextAlign.center,
+        ),
+        onPressed: (){
           setState(() {
-            if (intValue == null) {
-              errorText = 'please enter a number';
-            } else {
-              number = intValue;
-              errorText = null;
-              for (int i = 0; i < intValue / 2; i++) {
-                if (i * i == intValue) {
-                  squareFlag = 1;
+            if(game_over == 1)
+            {
+              for(int i = 0; i < color_list.length; i++)
+                {
+                  color_list[i] = Colors.blue;
                 }
+              for(int i = 0; i < _list.length; i++)
+              {
+                _list[i] = 0;
               }
-              for (int i = 0; i < intValue / 2; i++) {
-                if (i * i * i == intValue) {
-                  triangularFlag = 1;
-                }
-              }
-              if (squareFlag == 0 && triangularFlag == 0) {
-                conclusion =
-                    'Number $intValue is neither TRIANGULAR or SQUARE.';
-              } else if (squareFlag == 1 && triangularFlag == 1) {
-                conclusion = 'Number $intValue is both TRIANGULAR and SQUARE.';
-              } else if (squareFlag == 1) {
-                conclusion = 'Number $intValue is SQUARE.';
-              } else if (triangularFlag == 1) {
-                conclusion = 'Number $intValue is TRIANGULAR.';
-              }
-              createAlertDialog(context);
-              controller.clear();
+              button = '';
+              game_over = 0;
             }
           });
         },
-        child: const Icon(Icons.check),
       ),
     );
   }

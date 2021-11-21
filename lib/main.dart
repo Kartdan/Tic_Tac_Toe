@@ -24,7 +24,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int tic_tac(List<int> list, int nr)
+  int tictac(List<int> list, int nr)
   {
     if(list[0] == nr && list[1] == nr && list[2] == nr)
       {
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
     return 0;
   }
 
-  int no_winner(List<int> list)
+  int nowinner(List<int> list)
   {
     for(int i = 0; i < list.length; i++)
       {
@@ -73,8 +73,8 @@ class _HomePageState extends State<HomePage> {
     return 1;
   }
 
-  List<int> _list = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-  List<Color> color_list = [
+  final List<int> _list = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  List<Color> colorlist = [
     Colors.blue,
     Colors.blue,
     Colors.blue,
@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
     Colors.blue,
   ];
   int turn = 1;
-  int game_over = 0;
+  int gameover = 0;
   String button = '';
 
   @override
@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
         ),
         itemCount: _list.length,
@@ -110,44 +110,44 @@ class _HomePageState extends State<HomePage> {
               constraints: const BoxConstraints.expand(),
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.black),
-                  color: color_list[index],
+                  color: colorlist[index],
               ),
             ),
             onTap: () {
               setState(() {
                 {
                   if (turn == 1) {
-                    color_list[index] = Colors.green;
+                    colorlist[index] = Colors.green;
                     _list[index] = 1;
-                    if(tic_tac(_list, turn) == 1)
+                    if(tictac(_list, turn) == 1)
                       {
-                        button = "Play again";
-                        game_over = 1;
+                        button = 'Play again';
+                        gameover = 1;
                     } else {
                       turn = 2;
                     }
                   } else {
                     _list[index] = 2;
-                    color_list[index] = Colors.red;
-                    if (tic_tac(_list, turn) == 1) {
-                      button = "Play again";
-                      game_over = 1;
+                    colorlist[index] = Colors.red;
+                    if (tictac(_list, turn) == 1) {
+                      button = 'Play again';
+                      gameover = 1;
                     } else {
                       turn = 1;
                     }
                   }
-                  if (no_winner(_list) == 1) {
-                    if (game_over == 1) {
-                      for (int i = 0; i < color_list.length; i++) {
-                        color_list[i] = Colors.blue;
+                  if (nowinner(_list) == 1) {
+                    if (gameover == 1) {
+                      for (int i = 0; i < colorlist.length; i++) {
+                        colorlist[i] = Colors.blue;
                       }
                       for (int i = 0; i < _list.length; i++) {
                         _list[i] = 0;
                       }
                       button = 'Play again';
                     } else {
-                      for (int i = 0; i < color_list.length; i++) {
-                        color_list[i] = Colors.blue;
+                      for (int i = 0; i < colorlist.length; i++) {
+                        colorlist[i] = Colors.blue;
                       }
                       for (int i = 0; i < _list.length; i++) {
                         _list[i] = 0;
@@ -167,18 +167,18 @@ class _HomePageState extends State<HomePage> {
         ),
         onPressed: (){
           setState(() {
-            if(game_over == 1)
+            if(gameover == 1)
             {
-              for(int i = 0; i < color_list.length; i++)
+              for(int i = 0; i < colorlist.length; i++)
                 {
-                  color_list[i] = Colors.blue;
+                  colorlist[i] = Colors.blue;
                 }
               for(int i = 0; i < _list.length; i++)
               {
                 _list[i] = 0;
               }
               button = '';
-              game_over = 0;
+              gameover = 0;
             }
           });
         },
